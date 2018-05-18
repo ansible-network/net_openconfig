@@ -1,0 +1,12 @@
+---
+xpath_map:
+    - config : "configuration"
+    - interfaces : "/interfaces"
+    - interfaces/interface/config : "/interfaces/interface"
+    - interfaces/interface/config/name : "/interfaces/interface/name"
+    - interfaces/interface/config/description : "/interfaces/interface/description"
+    - interfaces/interface/config/mtu : "/interfaces/interface/mtu"
+    - interfaces/interface/subinterfaces/subinterface : "/interfaces/interface/unit"
+    - interfaces/interface/subinterfaces/subinterface/index : "/interfaces/interface/unit/name"
+    - interfaces/interface/subinterfaces/subinterface/ipv4/address/config/ip : "/interfaces/interface/unit/family/inet/address/name"
+    - interfaces/interface/subinterfaces/subinterface/ipv4/address/config/prefix-length: "/interfaces/interface/unit/family/inet/address/mask"

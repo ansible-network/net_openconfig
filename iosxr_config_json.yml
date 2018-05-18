@@ -1,0 +1,20 @@
+---
+- hosts: rtr1
+  tasks:
+    - name: Enable netconf on iosxr                                                     
+      iosxr_netconf:                                                                                                         
+        netconf_port: 830                                                                                         
+        netconf_vrf:  'default' 
+        provider: "{{ cli }}"
+        state: present                                                                                                       
+      register: result                                                                                                       
+                                                                                                                             
+    - name:  get facts
+      iosxr_facts:
+        gather_subset: all
+      register: result
+      tags: netconf_start
+                                                                                                                             
+    - assert: &true                                                                                                                
+        that:                                                                                                                
+          - 'result.changed == true'                                                                                         

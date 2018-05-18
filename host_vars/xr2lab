@@ -1,0 +1,4 @@
+ansible_connection: netconf
+ansible_network_os: iosxr
+ansible_user: root
+ansible_ssh_pass: root

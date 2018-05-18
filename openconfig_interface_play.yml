@@ -1,0 +1,39 @@
+---
+- hosts: rtr1
+  tasks:
+    - name:  Parse interface config in openconfig data model and write into xml for netconf
+      openconfig_parser:
+          src: 'interface_openconfig.json'
+          ns_map: 'openconfig_ns_map.yml'
+          output: 'templates/interface_openconfig.xml'
+      register: result
+
+    - name: Play config via netconf to IosXr who understands openconfig model
+      netconf_config:
+          src: 'interface_openconfig.xml'
+      register: result
+      tags: iosxr_play
+                                                                                                                             
+    - assert: &true                                                                                                                
+        that:                                                                                                                
+          - 'result.changed == true'
+
+- hosts: vsrx01
+  tasks:
+    - name : Parse interface openconfig and convert to junos native xml
+      openconfig_parser:
+          src: 'interface_openconfig.json'
+          output: 'templates/junos_interface_openconfig.xml'
+          xpath_map: 'junos_open_to_native_xpath_map.yml'
+      tags: parser
+
+    - name: Play interface config via netconf to Junos in Junos native xml
+      netconf_config:
+          src: 'junos_interface_openconfig.xml'
+      register: result
+      tags: junos_play
+                                                                                                                             
+    - assert:                                                                                                             
+        that:                                                                                                                
+          - 'result.changed == true'
+

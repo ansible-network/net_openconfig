@@ -1,0 +1,56 @@
+---
+- hosts: rtr1
+  tasks:
+    - name:  Parse Bgp Config                                                    
+      json_parser:                                                                                                         
+          src: 'bgp_edit_config.json'
+          output: 'templates/bgp_edit_config_exp.xml'
+      register: result     
+
+    - name: Play bgp config via netconf to IosXr
+      netconf_config:
+          src: 'bgp_edit_config_exp.xml'
+      register: result
+                                                                                                                             
+    - assert: &true                                                                                                                
+        that:                                                                                                                
+          - 'result.changed == true'
+
+- hosts: vsrx02
+  tasks:
+    - name: Play bgp config via netconf to Junos
+      netconf_config:
+          src: 'bgp_edit_config_junos.xml'
+      register: result
+      tags: junos
+                                                                                                                             
+    - assert:                                                                                                             
+        that:                                                                                                                
+          - 'result.changed == true'
+
+- hosts: rtr1
+  tasks:
+    - name: Play interface config via netconf to ios
+      netconf_config:
+          src: 'iosxr_interface_config.xml'
+      register: result
+      tags: xr_int
+                                                                                                                             
+    - assert:                                                                                                             
+        that:                                                                                                                
+          - 'result.changed == true'
+
+
+- hosts: vsrx02
+  tasks:
+     - name: Play interface config via netconf to junos
+       junos_interface:
+          name: ge-0/0/1
+          state: up
+          duplex: full
+       register: result
+       tags: junos_int
+     
+     - debug: msg=result
+       
+
