@@ -12,9 +12,9 @@
           <index>0</index>
           <ipv4 xmlns="http://openconfig.net/yang/interfaces/ip">
             <address>
-              <ip>11.19.2.1</ip>
+              <ip>11.19.3.1</ip>
               <config>
-                <ip>11.19.2.1</ip>
+                <ip>11.19.3.1</ip>
                 <prefix-length>24</prefix-length>
               </config>
             </address>

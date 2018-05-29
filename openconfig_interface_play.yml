@@ -1,6 +1,35 @@
 ---
 - hosts: rtr1
+  roles:
+    - role : network-engine
+
   tasks:
+    - name: get openconfig from device
+      netconf_get:
+         source: running
+         filter: <interfaces xmlns="http://openconfig.net/yang/interfaces"></interfaces>
+         display: json
+      register: result
+      tags: netconf_get
+
+    - name: write results to config file
+      copy: content="{{ result["output"]["rpc-reply"]["data"] }}" dest=templates/device_config.json
+
+    - name: read json oupput to facts using network-engine
+      debug:
+        msg: "{{ lookup('template', 'templates/device_config.json') }}"
+      register: result
+      tags: json_t
+
+    - set_fact: interface_list = "{{ result["msg"]["interfaces"]["interface"] }}"
+      register: interface_list
+
+    - name: Print list of interfaces
+      debug: 
+         msg: "{{ item }}" 
+      with_items:
+          - " {{ interface_list }}"
+
     - name:  Parse interface config in openconfig data model and write into xml for netconf
       openconfig_parser:
           src: 'interface_openconfig.json'
@@ -13,9 +42,9 @@
           src: 'interface_openconfig.xml'
       register: result
       tags: iosxr_play
-                                                                                                                             
-    - assert: &true                                                                                                                
-        that:                                                                                                                
+
+    - assert: &true
+        that:
           - 'result.changed == true'
 
 - hosts: vsrx01
@@ -32,8 +61,8 @@
           src: 'junos_interface_openconfig.xml'
       register: result
       tags: junos_play
-                                                                                                                             
-    - assert:                                                                                                             
-        that:                                                                                                                
+
+    - assert:
+        that:
           - 'result.changed == true'
 
