@@ -49,11 +49,8 @@ class ActionModule(ActionBase):
         except ValueError as exc:
            return dict(failed=True, msg=to_text(exc))
 
-        try:
-            src = self._task.args.get('src')
-            output_file = self._task.args.get('output')
-        except KeyError as exc:
-            return {'failed': True, 'msg': 'missing required argument: %s' % exc}
+        src = self._task.args.get('src')
+        output_file = self._task.args.get('output')
 
         #Optional Arguments Handling
         try:

@@ -15,7 +15,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 
 DOCUMENTATION = '''
 ---
-module: openconfig_parser
+module: openconfigparser
 short_description: Parses JSON openconfig based configs into xml which ansible
 can play
 description:

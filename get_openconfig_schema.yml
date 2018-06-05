@@ -1,0 +1,53 @@
+---
+- hosts: rtr1
+  roles:
+    - role : network-engine
+
+  tasks:
+    - name: get openconfig schema from device
+      netconf_rpc:
+         rpc: "get"
+         content: |
+            <filter>
+                <netconf-state xmlns="urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring">
+                    <schemas>
+                        <schema>
+                            <identifier/>
+                        </schema>
+                    </schemas>
+                </netconf-state>
+            </filter>
+         display: json
+      register: result
+      tags: netconf_get_all_schema
+
+    - copy: content="{{ result["output"]["data"]["netconf-state"]["schemas"]["schema"] }}" dest=templates/all_schemas_iosxr.json
+
+    - name: get a specific schema
+      netconf_rpc:
+          rpc: "get-schema"
+          xmlns: "urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring"
+          content: |
+            <identifier> openconfig-interfaces </identifier>
+      register: result
+      tags: open-schema
+
+    - copy: content="{{ result["output"]["rpc-reply"]["data"] }}" dest=templates/openconfig_yang_iosxr.json
+
+- hosts: vsrx02
+  roles:
+    - role : network-engine
+
+  tasks:
+    - name: get openconfig schema from device
+      netconf_rpc:
+         rpc: "get"
+         content: |
+            <filter>
+                <netconf-state xmlns="urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring">
+                    <schemas/>
+                </netconf-state>
+            </filter>
+         display: json
+      register: result
+      tags: all
