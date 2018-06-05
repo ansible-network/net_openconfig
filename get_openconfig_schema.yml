@@ -29,6 +29,7 @@
           xmlns: "urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring"
           content: |
             <identifier> openconfig-interfaces </identifier>
+          display: json
       register: result
       tags: open-schema
 
